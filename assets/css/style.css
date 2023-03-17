@@ -1,0 +1,31 @@
+header nav {
+    font-size: 20px;
+}
+
+.scores {
+    margin-right: 2px; /*need help to move it more to the left*/
+}
+.scores li {
+    list-style-type: none;
+}
+
+.scores a {
+    text-decoration: none;
+}
+
+
+h2 {
+    font-size: 45px;
+    text-align: center;
+    font-weight: bold;
+}
+
+div {
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.btn {
+    text-align: center;
+}
