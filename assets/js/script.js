@@ -2,6 +2,7 @@ var timeLeftEl = document.querySelector('#timeleft');
 var headingEl = document.querySelector('#heading');
 var contentEl = document.querySelector('#content');
 var startBtnEl = document.querySelector('#start');
+var timer;
 
 
 // list of all questions, choices, and answers
@@ -40,3 +41,62 @@ var questions = [
       answer: 'console.log',
     },
   ];
+
+  var timeLeft = 60;
+  var indexCurrentQuestion = 0;
+
+  function renderNextQuestion() {
+    contentEl.innerHTML = '';
+    var currentQuestion = questions[indexCurrentQuestion];
+
+    headingEl.textContent = currentQuestion.title;
+
+    for (var i = 0; i < currentQuestion.choices.length; i++) {
+        var buttonEl = document.createElement('button');
+        buttonEl.setAttribute('class', 'choice');
+        buttonEl.textContent = currentQuestion.choices[i];
+        contentEl.appendChild(buttonEl);
+    }
+  }
+
+  startBtnEl.addEventListener('click', function (event) {
+    timeLeftEl.textContent = timeLeft;
+
+    event.preventDefault();
+
+    timer = setInterval(function () {
+        timeLeft--;
+        timeLeft.textContent = timeLeft;
+
+        if (timeLeft === 0) {
+            clearInterval(timer);
+        }
+    }, 1000);
+  });
+
+  // When the user clicks on a choice button
+  contentEl.addEventListener('click', function (event) {
+    event.preventDefault();
+
+    if (event.target.matches('.choice')) {
+        console.log();
+        console.log();
+
+        if (event.target.textContent === currentQuestion.answer) {
+            // Increase the current score
+            // increase the indexOfCurrentQuestion
+            // renderNextQuestion
+            // might need help
+            document.getElementById('#content').innerHTML = `Your score is ${score}`;
+        }
+          else {
+            currentQuestion++;
+            score++;
+            renderNextQuestion();
+          }
+    }
+      else {
+        var errorMessage = document.createElement('error message');
+        console.log('Please select an answer');
+      }
+  });
