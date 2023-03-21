@@ -3,6 +3,8 @@ var headingEl = document.querySelector('#heading');
 var contentEl = document.querySelector('#content');
 var startBtnEl = document.querySelector('#start');
 var timer;
+var timeLeft;
+var questionIndex = 0;
 
 
 // list of all questions, choices, and answers
@@ -42,61 +44,86 @@ var questions = [
     },
   ];
 
-  var timeLeft = 60;
-  var indexCurrentQuestion = 0;
+ // var timeLeft = 60;
+//   var indexCurrentQuestion = 0;
 
   function renderNextQuestion() {
     contentEl.innerHTML = '';
-    var currentQuestion = questions[indexCurrentQuestion];
+    var currentQuestion = questions[questionIndex];
 
     headingEl.textContent = currentQuestion.title;
 
     for (var i = 0; i < currentQuestion.choices.length; i++) {
         var buttonEl = document.createElement('button');
         buttonEl.setAttribute('class', 'choice');
+        buttonEl.setAttribute('value', currentQuestion.choices.value);
         buttonEl.textContent = currentQuestion.choices[i];
         contentEl.appendChild(buttonEl);
+        buttonEl.onclick = btnClick;
     }
   }
 
-  startBtnEl.addEventListener('click', function (event) {
-    timeLeftEl.textContent = timeLeft;
-
-    event.preventDefault();
+   function startTimer () {
+    //timeLeftEl.textContent = timeLeft;
 
     timer = setInterval(function () {
         timeLeft--;
-        timeLeft.textContent = timeLeft;
+        timeLeftEl.textContent = timeLeft;
 
         if (timeLeft === 0) {
             clearInterval(timer);
         }
     }, 1000);
-  });
+  };
 
   // When the user clicks on a choice button
-  contentEl.addEventListener('click', function (event) {
-    event.preventDefault();
+  function startQuiz () {
+   // event.preventDefault(); 
+    timeLeft = 60;
+    startTimer();
+    renderNextQuestion();
+  }
 
-    if (event.target.matches('.choice')) {
-        console.log();
-        console.log();
+  function btnClick () {
+    //  console.log('wrong', event);
+    // if (event.target.matches('.choice')) {
+    //     console.log();
+    //     console.log();
 
-        if (event.target.textContent === currentQuestion.answer) {
-            // Increase the current score
-            // increase the indexOfCurrentQuestion
-            // renderNextQuestion
-            // might need help
-            document.getElementById('#content').innerHTML = `Your score is ${score}`;
+        // if (event.target.textContent === questionIndex.answer) {
+        //     // Increase the current score
+        //     // increase the indexOfCurrentQuestion
+        //     // renderNextQuestion
+        //     console.log('Yay!', questionIndex.answer);
+            
+        //     document.getElementById('#content').innerHTML = `Your score is ${score}`;
+        // }
+        //   else {
+        //     currentQuestion++;
+        //     score++;
+        //     renderNextQuestion();
+        //   }
+    // }
+    //   else {
+    //     //var errorMessage = document.createElement('error message');
+    //     console.log('Please select an answer');
+    //   }
+
+    if (this.value !== questions[questionIndex].answer) {
+        timer -= 15;
+        if (0 > timer) {
+            timer = 0;
         }
-          else {
-            currentQuestion++;
-            score++;
-            renderNextQuestion();
-          }
+
+        timeLeftEl.textContent = timer;
+    } 
+    questionIndex++;
+
+    if (questionIndex === questions.length){
+        alert("FIN")
+    } else {
+        renderNextQuestion();
     }
-      else {
-        var errorMessage = document.createElement('error message');
-        console.log('Please select an answer');
-      }
-  });
+  };
+
+  startBtnEl.addEventListener('click', startQuiz)
