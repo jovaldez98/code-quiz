@@ -44,7 +44,7 @@ var questions = [
     },
   ];
 
- // var timeLeft = 60;
+  //var timeLeft = 60;
 //   var indexCurrentQuestion = 0;
 
   function renderNextQuestion() {
@@ -56,12 +56,12 @@ var questions = [
     for (var i = 0; i < currentQuestion.choices.length; i++) {
         var buttonEl = document.createElement('button');
         buttonEl.setAttribute('class', 'choice');
-        buttonEl.setAttribute('value', currentQuestion.choices.value);
+        buttonEl.setAttribute('value', currentQuestion.choices[i]);
         buttonEl.textContent = currentQuestion.choices[i];
         contentEl.appendChild(buttonEl);
         buttonEl.onclick = btnClick;
     }
-  }
+  };
 
    function startTimer () {
     //timeLeftEl.textContent = timeLeft;
@@ -71,7 +71,7 @@ var questions = [
         timeLeftEl.textContent = timeLeft;
 
         if (timeLeft === 0) {
-            clearInterval(timer);
+            endQuiz();
         }
     }, 1000);
   };
@@ -80,9 +80,10 @@ var questions = [
   function startQuiz () {
    // event.preventDefault(); 
     timeLeft = 60;
+    startBtnEl.classList.add('hide');
     startTimer();
     renderNextQuestion();
-  }
+  };
 
   function btnClick () {
     //  console.log('wrong', event);
@@ -110,20 +111,37 @@ var questions = [
     //   }
 
     if (this.value !== questions[questionIndex].answer) {
-        timer -= 15;
-        if (0 > timer) {
-            timer = 0;
+        timeLeft -= 15;
+        if (timeLeft <= 0 ) {
+            timeLeft = 0;
+            timeLeftEl.textContent = timeLeft;
         }
-
-        timeLeftEl.textContent = timer;
     } 
+
     questionIndex++;
 
     if (questionIndex === questions.length){
-        alert("FIN")
+        endQuiz();
     } else {
-        renderNextQuestion();
+        renderNextQuestion(); 
     }
   };
 
+  function endQuiz () {
+    clearInterval(timer);
+    contentEl.classList.add('hide');
+    document.querySelector('.end-quiz').classList.remove('hide');
+    document.getElementById('final-score').textContent = timeLeft;
+    document.getElementById('save-btn').addEventListener('click', function() {
+        var initials = document.getElementById('initials').value;
+        var newScore = {
+            initials: initials,
+            score:timeLeft
+        }
+        var highScores = JSON.parse(localStorage.getItem('high-scores')) || [];
+        highScores.push(newScore);
+        localStorage.setItem('high-scores', JSON.stringify(highScores));
+        
+    });
+  }
   startBtnEl.addEventListener('click', startQuiz)
